@@ -13,24 +13,24 @@ const navLinks = [
   { label: "Contact",        href: "#contact" },
 ];
 
-// Reliably scrolls to a section — retries up to 10 times waiting for the
-// element to appear in the DOM (needed after a route change on mobile).
-const scrollToSection = (href: string, attempt = 0) => {
-  const el = document.querySelector(href);
+// Strips the '#' and finds the element, then uses scrollIntoView which works
+// reliably on iOS Safari, Android Chrome, and all desktop browsers.
+const scrollToId = (href: string, attempt = 0) => {
+  const id = href.replace("#", "");
+  const el = document.getElementById(id);
   if (el) {
-    // Small offset so the fixed navbar doesn't cover the heading
-    const top = el.getBoundingClientRect().top + window.scrollY - 72;
-    window.scrollTo({ top, behavior: "smooth" });
-  } else if (attempt < 10) {
-    setTimeout(() => scrollToSection(href, attempt + 1), 80);
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  } else if (attempt < 15) {
+    // Retry — element may not be in DOM yet after a route change
+    setTimeout(() => scrollToId(href, attempt + 1), 100);
   }
 };
 
 const Navbar = () => {
   const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location  = useLocation();
-  const navigate  = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -38,26 +38,29 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close mobile menu whenever the route changes
+  // Auto-close menu on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  // Lock body scroll when mobile menu is open
+  // Prevent background scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
   const handleClick = useCallback((href: string) => {
+    // Close menu first — gives the browser a frame to collapse the menu
+    // before we attempt to scroll, which avoids layout shift issues on mobile
     setMobileOpen(false);
 
     if (location.pathname !== "/") {
-      // Navigate home first, then scroll once the page has mounted
       navigate("/");
-      setTimeout(() => scrollToSection(href), 120);
+      // Wait for React to render the home page, then scroll
+      setTimeout(() => scrollToId(href), 300);
     } else {
-      scrollToSection(href);
+      // Small delay so mobile menu animation finishes before scroll
+      setTimeout(() => scrollToId(href), 50);
     }
   }, [location.pathname, navigate]);
 
@@ -89,9 +92,9 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* ── Mobile toggle ── */}
+        {/* ── Mobile hamburger ── */}
         <button
-          className="md:hidden text-foreground p-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          className="md:hidden text-foreground p-2 -mr-2 rounded-md"
           onClick={() => setMobileOpen((v) => !v)}
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
         >
@@ -99,29 +102,31 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* ── Mobile menu ── */}
+      {/* ── Mobile dropdown ── */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             key="mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.22, ease: "easeInOut" }}
-            className="md:hidden glass-strong border-t border-border overflow-hidden"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="md:hidden glass-strong border-t border-border"
           >
-            <div className="px-6 py-5 flex flex-col gap-1">
-              {navLinks.map((link, i) => (
-                <motion.button
+            <div className="px-4 py-3 flex flex-col">
+              {navLinks.map((link) => (
+                <button
                   key={link.label}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.045 }}
                   onClick={() => handleClick(link.href)}
-                  className="text-muted-foreground hover:text-primary active:text-primary transition-colors font-body text-left py-3 px-2 rounded-lg hover:bg-primary/5 active:bg-primary/10 text-base w-full"
+                  // Large touch target — minimum 48px height for mobile usability
+                  className="text-left text-base font-body text-muted-foreground
+                             hover:text-primary active:text-primary
+                             py-3 px-3 rounded-xl
+                             hover:bg-white/5 active:bg-white/10
+                             transition-colors w-full min-h-[48px] flex items-center"
                 >
                   {link.label}
-                </motion.button>
+                </button>
               ))}
             </div>
           </motion.div>

@@ -8,20 +8,18 @@ const navLinks = [
   { label: "Skills",         href: "#skills" },
   { label: "Projects",       href: "#projects" },
   { label: "Blogs",          href: "#blogs-preview" },
+  { label: "Collaborate",    href: "#collaborate" },
   { label: "Certifications", href: "#certifications" },
   { label: "Resume",         href: "#resume" },
   { label: "Contact",        href: "#contact" },
 ];
 
-// Strips the '#' and finds the element, then uses scrollIntoView which works
-// reliably on iOS Safari, Android Chrome, and all desktop browsers.
 const scrollToId = (href: string, attempt = 0) => {
   const id = href.replace("#", "");
   const el = document.getElementById(id);
   if (el) {
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   } else if (attempt < 15) {
-    // Retry — element may not be in DOM yet after a route change
     setTimeout(() => scrollToId(href, attempt + 1), 100);
   }
 };
@@ -29,8 +27,8 @@ const scrollToId = (href: string, attempt = 0) => {
 const Navbar = () => {
   const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const location  = useLocation();
+  const navigate  = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -38,28 +36,21 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Auto-close menu on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
 
-  // Prevent background scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
   const handleClick = useCallback((href: string) => {
-    // Close menu first — gives the browser a frame to collapse the menu
-    // before we attempt to scroll, which avoids layout shift issues on mobile
     setMobileOpen(false);
-
     if (location.pathname !== "/") {
       navigate("/");
-      // Wait for React to render the home page, then scroll
       setTimeout(() => scrollToId(href), 300);
     } else {
-      // Small delay so mobile menu animation finishes before scroll
       setTimeout(() => scrollToId(href), 50);
     }
   }, [location.pathname, navigate]);
@@ -71,6 +62,8 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+        {/* Logo */}
         <Link
           to="/"
           className="font-heading font-extrabold text-2xl gradient-text"
@@ -79,7 +72,7 @@ const Navbar = () => {
           ARONAGENT
         </Link>
 
-        {/* ── Desktop ── */}
+        {/* ── Desktop nav ── */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <button
@@ -118,7 +111,6 @@ const Navbar = () => {
                 <button
                   key={link.label}
                   onClick={() => handleClick(link.href)}
-                  // Large touch target — minimum 48px height for mobile usability
                   className="text-left text-base font-body text-muted-foreground
                              hover:text-primary active:text-primary
                              py-3 px-3 rounded-xl

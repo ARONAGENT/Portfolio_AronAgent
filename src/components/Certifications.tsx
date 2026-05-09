@@ -122,6 +122,33 @@ const certifications = [
     verifyLink: "https://app.codingshuttle.com/certificate/verify/TLNRSWVV",
     driveLink: "https://drive.google.com/file/d/1YaMZOsANKAzZvZzNw3PuxpQF_loxKVB9/view?usp=sharing",
   },
+  {
+  id: 6,
+  icon: "🌟",
+  title: "Spring Boot 0 To 100 – Advanced Backend Development",
+  issuer: "Coding Shuttle",
+  issuerUrl: "https://www.codingshuttle.com/",
+  issuedDate: "Nov 2025",
+  credentialId: "6SEYHO5W",
+  accent: "border-emerald-500",
+  accentColor: "text-emerald-400",
+  bgGlow: "bg-emerald-500/5",
+  period: "2025 – Nov 2025",
+  achievement:
+    "Backend journey milestone unlocked! Successfully completed Spring Boot Cohort 4.0 at Coding Shuttle.",
+  learned: [
+   "AOP & Aspect-Oriented Programming",
+  "Caching with Redis",
+  "Transaction Management",
+  "Microservices Architecture",
+  "Docker Containerization",
+  "Kubernetes Fundamentals",
+  ],
+  verifyLink:
+    "https://app.codingshuttle.com/certificate/verify/6SEYHO5W",
+  driveLink:
+    "https://drive.google.com/file/d/1gFwZM04g4z0bCI_YXuCrZuEi1ipAx96A/view?usp=sharing",
+}
 ];
 
 // ─── CERT CARD ────────────────────────────────────────────────────────────────

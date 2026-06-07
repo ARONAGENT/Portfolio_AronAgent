@@ -6,9 +6,16 @@ interface BlogImageProps {
 }
 
 const BlogImage = ({ src, caption, badge, loading = "lazy" }: BlogImageProps) => (
-  <figure className="relative my-6">
+  <figure style={{ position: "relative", margin: "24px 0" }}>
     {badge !== undefined && (
-      <span className="absolute top-3 left-3 z-10 w-7 h-7 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
+      <span style={{
+        position: "absolute", top: "12px", left: "12px", zIndex: 10,
+        width: "28px", height: "28px", borderRadius: "50%",
+        background: "#BC6C25", color: "#FEFAE0",
+        fontSize: "11px", fontWeight: 700, fontFamily: "'JetBrains Mono', monospace",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        flexShrink: 0,
+      }}>
         {badge}
       </span>
     )}
@@ -16,7 +23,15 @@ const BlogImage = ({ src, caption, badge, loading = "lazy" }: BlogImageProps) =>
       src={src}
       alt={caption}
       loading={loading}
-      className="blog-image"
+      style={{
+        width: "100%",
+        maxWidth: "860px",
+        height: "auto",
+        display: "block",
+        borderRadius: "8px",
+        border: "1px solid rgba(254,250,224,0.07)",
+        margin: "0 auto",
+      }}
       onError={(e) => {
         const target = e.target as HTMLImageElement;
         target.style.display = "none";
@@ -24,13 +39,36 @@ const BlogImage = ({ src, caption, badge, loading = "lazy" }: BlogImageProps) =>
         if (placeholder) placeholder.style.display = "flex";
       }}
     />
+    {/* Fallback placeholder */}
     <div
-      className="hidden items-center justify-center h-48 rounded-xl bg-surface2 border border-primary/15 text-muted-foreground text-sm mx-auto"
-      style={{ maxWidth: 860 }}
+      style={{
+        display: "none",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "192px",
+        borderRadius: "12px",
+        background: "#1C2416",
+        border: "1px solid rgba(188,108,37,0.15)",
+        color: "rgba(254,250,224,0.35)",
+        fontSize: "13px",
+        fontFamily: "'JetBrains Mono', monospace",
+        maxWidth: "860px",
+        margin: "0 auto",
+        letterSpacing: "0.04em",
+      }}
     >
       {caption}
     </div>
-    <figcaption className="text-center text-[13px] text-muted-foreground mt-2">
+    <figcaption style={{
+      textAlign: "center",
+      fontSize: "12px",
+      color: "rgba(254,250,224,0.3)",
+      marginTop: "10px",
+      fontFamily: "'DM Sans', sans-serif",
+      lineHeight: 1.5,
+      paddingLeft: "8px",
+      paddingRight: "8px",
+    }}>
       {caption}
     </figcaption>
   </figure>

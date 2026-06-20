@@ -9,7 +9,7 @@ const AMBER_LT   = "#DDA15E";
 const CREAM      = "#FEFAE0";
 const BORDER     = "rgba(96,108,56,0.18)";
 
-const DRIVE_SHARE_URL = "https://drive.google.com/file/d/19AyrdLyAXqWgRlUFg6uRe9ua6NvA1BMz/view?usp=sharing";
+const DRIVE_SHARE_URL = "https://drive.google.com/file/d/17Y-gnG7wEDB4pHhR-f42GqPBC1UUkwC5/view?usp=sharing";
 const RESUME_FILENAME = "Rohan_Uke_Resume_June2026.pdf";
 const LAST_UPDATED    = "June 2026";
 

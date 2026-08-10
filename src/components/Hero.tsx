@@ -6,6 +6,9 @@ import profileImg from "@/assets/profile.png";
 const roles = ["Spring Boot Specialist","Microservices Architect","AI Integration Engineer","Backend Systems Builder","Cloud Native Developer"];
 const MARQUEE = ["Spring Boot","Microservices","REST APIs","AI Integration","Cloud Native","Docker","PostgreSQL","LangChain","Open Source","Backend Systems"];
 
+// TODO: replace with your actual Cloudflare Worker URL after deploying
+const VIEWS_API_URL = "https://portfolio-views.YOUR-SUBDOMAIN.workers.dev/views";
+
 const scrollTo = (id: string) => {
   const el = document.getElementById(id);
   if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); }
@@ -15,7 +18,7 @@ export default function Hero() {
   const [roleIndex,   setRoleIndex]   = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting,  setIsDeleting]  = useState(false);
-  const [views,       setViews]       = useState<number | null>(null);
+  const [views,       setViews]       = useState<number | null>(300); // fallback
 
   useEffect(() => {
     const cur = roles[roleIndex];
@@ -32,8 +35,18 @@ export default function Hero() {
   }, [displayText, isDeleting, roleIndex]);
 
   useEffect(() => {
-    fetch("https://api.counterapi.dev/v1/portfolio-aronagent/views/up")
-      .then(r => r.json()).then(d => setViews(d.count)).catch(() => setViews(null));
+    fetch(VIEWS_API_URL)
+      .then(r => {
+        if (!r.ok) throw new Error(`Worker returned ${r.status}`);
+        return r.json();
+      })
+      .then(d => {
+        if (typeof d?.count === "number") setViews(d.count);
+        // else: keep fallback, don't overwrite with junk
+      })
+      .catch(() => {
+        // API unreachable — silently keep fallback, no crash
+      });
   }, []);
 
   return (
@@ -98,7 +111,7 @@ export default function Hero() {
                 ))}
               </div>
 
-              {views !== null && (
+              {typeof views === "number" && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
                   <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "7px 15px", borderRadius: 99, border: "1.5px solid rgba(188,108,37,0.28)", background: "rgba(188,108,37,0.07)" }}>
                     <Eye size={14} color="#BC6C25" />
@@ -155,7 +168,7 @@ export default function Hero() {
 
               {/* Stats */}
               <div style={{ display: "flex", gap: 8 }}>
-                {[{ n: "10+", l: "Projects" }, { n: views ? `${(views/1000).toFixed(1)}k` : "—", l: "Views" }].map(({ n, l }) => (
+                {[{ n: "10+", l: "Projects" }, { n: typeof views === "number" ? `${(views/1000).toFixed(1)}k` : "—", l: "Views" }].map(({ n, l }) => (
                   <div key={l} style={{ background: "#fff", border: "1.5px solid rgba(96,108,56,0.18)", borderRadius: 10, padding: "10px 16px", textAlign: "center" as const, minWidth: 70 }}>
                     <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 20, color: "#283618", letterSpacing: "-0.03em", display: "block", lineHeight: 1, marginBottom: 3 }}>{n}</span>
                     <span style={{ fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: 9, color: "#888670", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>{l}</span>

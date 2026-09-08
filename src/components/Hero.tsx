@@ -18,7 +18,7 @@ export default function Hero() {
   const [roleIndex,   setRoleIndex]   = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting,  setIsDeleting]  = useState(false);
-  const [views,       setViews]       = useState<number | null>(300); // fallback
+  const [views,       setViews]       = useState<number | null>(500); // fallback
 
   useEffect(() => {
     const cur = roles[roleIndex];

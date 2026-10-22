@@ -9,9 +9,9 @@ const AMBER_LT   = "#DDA15E";
 const CREAM      = "#FEFAE0";
 const BORDER     = "rgba(96,108,56,0.18)";
 
-const DRIVE_SHARE_URL = "https://drive.google.com/file/d/1fQLAlLLzCCwzDcxs95YWslfxxLKVA9kO/view?usp=sharing";
-const RESUME_FILENAME = "Rohan_Uke_Resume_September_2026.pdf";
-const LAST_UPDATED    = "September 2026";
+const DRIVE_SHARE_URL = "https://drive.google.com/file/d/1c6y1VVkVidZXCvMphwbAzawxiaYed3ks/view?usp=sharing";
+const RESUME_FILENAME = "Rohan_Uke_Resume_October_2026.pdf";
+const LAST_UPDATED    = "October 2026";
 
 const toEmbedUrl = (url: string) => {
   const m = url.match(/\/file\/d\/([^/?]+)/);
